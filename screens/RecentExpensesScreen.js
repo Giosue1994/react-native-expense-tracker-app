@@ -4,26 +4,26 @@ import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
 const EXPENSES = [
   {
     id: 1,
-    description: "Bello testo",
+    description: "Description",
     amount: 20.3,
     date: new Date("2024-04-22"),
   },
   {
     id: 2,
-    description: "Cacca grossa",
+    description: "Lorem Ipsum",
     amount: 12.68,
     date: new Date("2024-12-13"),
   },
   {
     id: 3,
-    description: "Ikikikikik",
+    description: "Textures",
     amount: 34.54,
     date: new Date("2024-07-02"),
   },
   { id: 4, description: "logog", amount: 14.44, date: new Date("2024-03-11") },
   {
     id: 5,
-    description: "testo a caso",
+    description: "Title",
     amount: 74.74,
     date: new Date("2024-07-30"),
   },
