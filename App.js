@@ -34,6 +34,7 @@ function BottomTabsNavigator() {
             <IconButton
               icon="add"
               color={tintColor}
+              size={24}
               onPress={() => {
                 navigation.navigate("ManageExpense");
               }}
