@@ -1,36 +1,24 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
-
-const EXPENSES = [
-  {
-    id: 1,
-    description: "Description",
-    amount: 20.3,
-    date: new Date("2024-04-22"),
-  },
-  {
-    id: 2,
-    description: "Lorem Ipsum",
-    amount: 12.68,
-    date: new Date("2024-12-13"),
-  },
-  {
-    id: 3,
-    description: "Textures",
-    amount: 34.54,
-    date: new Date("2024-07-02"),
-  },
-  { id: 4, description: "logog", amount: 14.44, date: new Date("2024-03-11") },
-  {
-    id: 5,
-    description: "Title",
-    amount: 74.74,
-    date: new Date("2024-07-30"),
-  },
-];
+import { useSelector } from "react-redux";
+import { getDateMinusDays } from "../util/date";
 
 export default function RecentExpensesScreen() {
-  return <ExpensesOutput expenses={EXPENSES} summaryText="Last 7 Days" />;
+  const expenses = useSelector((state) => state.expenses.expenses);
+
+  // filtrare expenses che si sono verificate solo negli ultimi 7 giorni
+  const recentExpenses = expenses.filter((expense) => {
+    const today = new Date();
+
+    // trovare le spese degli ultimi 7 giorni a partire da oggi
+    // ottenendo la data di 7 giorni fa tramite la funzione
+    const date7daysAgo = getDateMinusDays(today, 7);
+
+    // se la data della spesa è maggiore della data di 7 giorni fa ritorna il risultato
+    return expense.date > date7daysAgo;
+  });
+
+  return <ExpensesOutput expenses={recentExpenses} summaryText="Last 7 Days" />;
 }
 
 const styles = StyleSheet.create({});

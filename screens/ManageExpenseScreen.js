@@ -1,8 +1,10 @@
 import { useLayoutEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View } from "react-native";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../styles";
 import Button from "../components/UI/Button";
+import { expensesActions } from "../store/expenses";
 
 const Colors = GlobalStyles.colors;
 
@@ -12,6 +14,9 @@ export default function ManageExpenseScreen({ route, navigation }) {
   // viene trasformato in un booleano
   const isEditing = !!editedExpenseId;
 
+  const dispatch = useDispatch();
+  const expenses = useSelector((state) => state.expenses);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: isEditing ? "Edit Expense" : "Add Expense",
@@ -19,6 +24,7 @@ export default function ManageExpenseScreen({ route, navigation }) {
   }, [navigation, isEditing]);
 
   function deleteExpense() {
+    dispatch(expensesActions.deleteExpense(editedExpenseId));
     navigation.goBack();
   }
 
@@ -27,6 +33,26 @@ export default function ManageExpenseScreen({ route, navigation }) {
   }
 
   function confirmHandler() {
+    if (isEditing) {
+      dispatch(
+        expensesActions.updateExpense({
+          id: editedExpenseId,
+          data: {
+            description: "Edit Expense",
+            amount: 34.17,
+            date: new Date(),
+          },
+        })
+      );
+    } else {
+      dispatch(
+        expensesActions.addExpense({
+          description: "New Expense",
+          amount: 23.67,
+          date: new Date(),
+        })
+      );
+    }
     navigation.goBack();
   }
 

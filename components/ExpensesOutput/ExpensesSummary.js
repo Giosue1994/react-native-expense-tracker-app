@@ -4,6 +4,8 @@ import { GlobalStyles } from "../../styles";
 const Colors = GlobalStyles.colors;
 
 export default function ExpensesSummary({ expenses, text }) {
+  // somma di tutti gli importi
+  // 0 è il valore assegnato a sum che viene sommato ad ogni elemento
   const totalExpenses = expenses.reduce((sum, expense) => {
     return sum + expense.amount;
   }, 0);

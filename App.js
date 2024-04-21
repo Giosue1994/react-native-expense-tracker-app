@@ -1,5 +1,6 @@
+import { Provider } from "react-redux";
 import { StatusBar } from "expo-status-bar";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -10,6 +11,7 @@ import AllExpensesScreen from "./screens/AllExpensesScreen";
 import RecentExpensesScreen from "./screens/RecentExpensesScreen";
 import ManageExpenseScreen from "./screens/ManageExpenseScreen";
 import IconButton from "./components/UI/IconButton";
+import { store } from "./store/store";
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -73,34 +75,36 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: Colors.primary500,
-            },
-            headerTintColor: "white",
-            contentStyle: {
-              backgroundColor: Colors.primary700,
-            },
-          }}
-        >
-          <Stack.Screen
-            name="BottomTabs"
-            component={BottomTabsNavigator}
-            options={{
-              headerShown: false,
+      <Provider store={store}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: Colors.primary500,
+              },
+              headerTintColor: "white",
+              contentStyle: {
+                backgroundColor: Colors.primary700,
+              },
             }}
-          />
-          <Stack.Screen
-            name="ManageExpense"
-            component={ManageExpenseScreen}
-            options={{
-              presentation: "modal",
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+          >
+            <Stack.Screen
+              name="BottomTabs"
+              component={BottomTabsNavigator}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="ManageExpense"
+              component={ManageExpenseScreen}
+              options={{
+                presentation: "modal",
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
     </>
   );
 }
