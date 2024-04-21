@@ -18,7 +18,13 @@ export default function RecentExpensesScreen() {
     return expense.date > date7daysAgo;
   });
 
-  return <ExpensesOutput expenses={recentExpenses} summaryText="Last 7 Days" />;
+  return (
+    <ExpensesOutput
+      fallbackText="No expenses registered for the last 7 days."
+      expenses={recentExpenses}
+      summaryText="Last 7 Days"
+    />
+  );
 }
 
 const styles = StyleSheet.create({});
