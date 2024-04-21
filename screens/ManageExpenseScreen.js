@@ -5,6 +5,7 @@ import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../styles";
 import Button from "../components/UI/Button";
 import { expensesActions } from "../store/expenses";
+import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
 const Colors = GlobalStyles.colors;
 
@@ -58,6 +59,7 @@ export default function ManageExpenseScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+      <ExpenseForm />
       <View style={styles.buttons}>
         <Button style={styles.button} mode="flat" onPress={cancelHandler}>
           Cancel
