@@ -6,9 +6,7 @@ const Colors = GlobalStyles.colors;
 export default function ExpenseItem({ description, date, amount, id }) {
   const navigation = useNavigation();
 
-  const formattedDate = `${date.getDate()}-${
-    date.getMonth() + 1
-  }-${date.getFullYear()}`;
+  const formattedDate = date.toISOString().slice(0, 10);
 
   function editExpenseHandler() {
     navigation.navigate("ManageExpense", { expenseId: id });
