@@ -6,6 +6,7 @@ import { GlobalStyles } from "../styles";
 
 import { expensesActions } from "../store/expenses";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
+import { storeExpense, updateExpense, deleteExpense } from "../util/http";
 
 const Colors = GlobalStyles.colors;
 
@@ -28,7 +29,8 @@ export default function ManageExpenseScreen({ route, navigation }) {
     });
   }, [navigation, isEditing]);
 
-  function deleteExpense() {
+  async function deleteExpenseHandler() {
+    await deleteExpense(editedExpenseId);
     dispatch(expensesActions.deleteExpense(editedExpenseId));
     navigation.goBack();
   }
@@ -37,7 +39,7 @@ export default function ManageExpenseScreen({ route, navigation }) {
     navigation.goBack();
   }
 
-  function confirmHandler(expenseData) {
+  async function confirmHandler(expenseData) {
     if (isEditing) {
       dispatch(
         expensesActions.updateExpense({
@@ -45,8 +47,10 @@ export default function ManageExpenseScreen({ route, navigation }) {
           data: expenseData,
         })
       );
+      await updateExpense(editedExpenseId, expenseData);
     } else {
-      dispatch(expensesActions.addExpense(expenseData));
+      const id = await storeExpense(expenseData);
+      dispatch(expensesActions.addExpense({ ...expenseData, id: id }));
     }
     navigation.goBack();
   }
@@ -66,7 +70,7 @@ export default function ManageExpenseScreen({ route, navigation }) {
             icon="trash"
             color={Colors.error500}
             size={36}
-            onPress={deleteExpense}
+            onPress={deleteExpenseHandler}
           />
         </View>
       )}

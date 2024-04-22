@@ -1,10 +1,23 @@
 import { StyleSheet } from "react-native";
 import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { expensesActions } from "../store/expenses";
 import { getDateMinusDays } from "../util/date";
+import { useEffect } from "react";
+import { fetchExpenses } from "../util/http";
 
 export default function RecentExpensesScreen() {
   const expenses = useSelector((state) => state.expenses.expenses);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function getExpenses() {
+      const expenses = await fetchExpenses();
+      dispatch(expensesActions.setExpenses(expenses));
+    }
+
+    getExpenses();
+  }, []);
 
   // filtrare expenses che si sono verificate solo negli ultimi 7 giorni
   const recentExpenses = expenses.filter((expense) => {
