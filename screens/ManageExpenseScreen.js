@@ -8,11 +8,13 @@ import { expensesActions } from "../store/expenses";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 import { storeExpense, updateExpense, deleteExpense } from "../util/http";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 const Colors = GlobalStyles.colors;
 
 export default function ManageExpenseScreen({ route, navigation }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState();
   const editedExpenseId = route.params?.expenseId;
 
   // viene trasformato in un booleano
@@ -33,9 +35,14 @@ export default function ManageExpenseScreen({ route, navigation }) {
 
   async function deleteExpenseHandler() {
     setIsSubmitting(true);
-    await deleteExpense(editedExpenseId);
-    dispatch(expensesActions.deleteExpense(editedExpenseId));
-    navigation.goBack();
+    try {
+      await deleteExpense(editedExpenseId);
+      dispatch(expensesActions.deleteExpense(editedExpenseId));
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not delete expense");
+      setIsSubmitting(false);
+    }
   }
 
   function cancelHandler() {
@@ -44,19 +51,28 @@ export default function ManageExpenseScreen({ route, navigation }) {
 
   async function confirmHandler(expenseData) {
     setIsSubmitting(true);
-    if (isEditing) {
-      dispatch(
-        expensesActions.updateExpense({
-          id: editedExpenseId,
-          data: expenseData,
-        })
-      );
-      await updateExpense(editedExpenseId, expenseData);
-    } else {
-      const id = await storeExpense(expenseData);
-      dispatch(expensesActions.addExpense({ ...expenseData, id: id }));
+    try {
+      if (isEditing) {
+        dispatch(
+          expensesActions.updateExpense({
+            id: editedExpenseId,
+            data: expenseData,
+          })
+        );
+        await updateExpense(editedExpenseId, expenseData);
+      } else {
+        const id = await storeExpense(expenseData);
+        dispatch(expensesActions.addExpense({ ...expenseData, id: id }));
+      }
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not save date - please try again later!");
+      setIsSubmitting(false);
     }
-    navigation.goBack();
+  }
+
+  if (error && !isSubmitting) {
+    return <ErrorOverlay message={error} />;
   }
 
   if (isSubmitting) {

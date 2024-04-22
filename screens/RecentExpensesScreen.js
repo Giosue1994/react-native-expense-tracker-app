@@ -1,14 +1,16 @@
 import { StyleSheet } from "react-native";
-import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
 import { useDispatch, useSelector } from "react-redux";
 import { expensesActions } from "../store/expenses";
 import { getDateMinusDays } from "../util/date";
 import { useEffect, useState } from "react";
 import { fetchExpenses } from "../util/http";
+import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 export default function RecentExpensesScreen() {
   const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState();
   const expenses = useSelector((state) => state.expenses.expenses);
 
   const dispatch = useDispatch();
@@ -16,13 +18,25 @@ export default function RecentExpensesScreen() {
   useEffect(() => {
     async function getExpenses() {
       setIsFetching(true);
-      const expenses = await fetchExpenses();
+      try {
+        const expenses = await fetchExpenses();
+        dispatch(expensesActions.setExpenses(expenses));
+      } catch (error) {
+        setError("Could not fetch expenses");
+      }
       setIsFetching(false);
-      dispatch(expensesActions.setExpenses(expenses));
     }
 
     getExpenses();
   }, []);
+
+  function errorHandler() {
+    setError(null);
+  }
+
+  if (error && !isFetching) {
+    return <ErrorOverlay message={error} onConfirm={errorHandler} />;
+  }
 
   if (isFetching) {
     return <LoadingOverlay />;
