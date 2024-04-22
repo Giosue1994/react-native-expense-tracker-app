@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, Text, View } from "react-native";
 import IconButton from "../components/UI/IconButton";
@@ -7,10 +7,12 @@ import { GlobalStyles } from "../styles";
 import { expensesActions } from "../store/expenses";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 import { storeExpense, updateExpense, deleteExpense } from "../util/http";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
 
 const Colors = GlobalStyles.colors;
 
 export default function ManageExpenseScreen({ route, navigation }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const editedExpenseId = route.params?.expenseId;
 
   // viene trasformato in un booleano
@@ -30,6 +32,7 @@ export default function ManageExpenseScreen({ route, navigation }) {
   }, [navigation, isEditing]);
 
   async function deleteExpenseHandler() {
+    setIsSubmitting(true);
     await deleteExpense(editedExpenseId);
     dispatch(expensesActions.deleteExpense(editedExpenseId));
     navigation.goBack();
@@ -40,6 +43,7 @@ export default function ManageExpenseScreen({ route, navigation }) {
   }
 
   async function confirmHandler(expenseData) {
+    setIsSubmitting(true);
     if (isEditing) {
       dispatch(
         expensesActions.updateExpense({
@@ -53,6 +57,10 @@ export default function ManageExpenseScreen({ route, navigation }) {
       dispatch(expensesActions.addExpense({ ...expenseData, id: id }));
     }
     navigation.goBack();
+  }
+
+  if (isSubmitting) {
+    return <LoadingOverlay />;
   }
 
   return (
