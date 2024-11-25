@@ -13,7 +13,7 @@ export default function ExpensesSummary({ expenses, text }) {
   return (
     <View style={styles.summaryContainer}>
       <Text style={styles.summaryText}>{text}</Text>
-      <Text style={styles.summaryPrice}>${totalExpenses.toFixed(2)}</Text>
+      <Text style={styles.summaryPrice}>€{totalExpenses.toFixed(2)}</Text>
     </View>
   );
 }
